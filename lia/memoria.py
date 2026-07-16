@@ -17,18 +17,32 @@ class Memoria:
 
         with open(self.arquivo, "w", encoding="utf-8") as arquivo:
 
-            json.dump(dados, arquivo, indent=4)
+            json.dump(dados, arquivo, indent=4, ensure_ascii=False)
 
-    def guardar(self, chave, valor):
+    def guardar_nome(self, nome):
 
         dados = self.carregar()
 
-        dados[chave] = valor
+        dados["usuario"]["nome"] = nome
 
         self.salvar(dados)
 
-    def ler(self, chave):
+    def ler_nome(self):
 
         dados = self.carregar()
 
-        return dados.get(chave)
+        return dados["usuario"]["nome"]
+
+    def aprender(self, objeto, descricao):
+
+        dados = self.carregar()
+
+        dados["conhecimento"][objeto.lower()] = descricao
+
+        self.salvar(dados)
+
+    def consultar(self, objeto):
+
+        dados = self.carregar()
+
+        return dados["conhecimento"].get(objeto.lower())
