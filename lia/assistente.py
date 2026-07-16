@@ -25,42 +25,60 @@ class Lia:
 
     while True:
 
-        pergunta = input("Voce: ")
+    pergunta = input("Voce: ")
 
-        intencao = self.interpretador.interpretar(pergunta)
+    pergunta_normal = self.interpretador.normalizar(pergunta)
 
-        if intencao == "APRENDER":
+    intencao = self.interpretador.interpretar(pergunta)
 
-            partes = pergunta.split(" e ", 1)
+    if intencao == "NOME":
 
-            if len(partes) == 2:
+        nome = pergunta[12:].strip()
 
-                objeto = partes[0].strip()
+        self.memoria.guardar_nome(nome)
 
-                descricao = partes[1].strip()
+        print(f"Lia: Entendido. Seu nome e {nome}.")
 
-                self.memoria.aprender(objeto, descricao)
+    elif intencao == "GOSTO":
 
-                print("Lia: Entendido. Vou lembrar disso.")
+        gosto = pergunta[9:].strip()
 
-        elif intencao == "PERGUNTAR":
+        self.memoria.adicionar_gosto(gosto)
 
-            objeto = pergunta.lower()
+        print("Lia: Vou lembrar disso.")
 
-            objeto = objeto.replace("o que e", "")
+    elif intencao == "APRENDER":
 
-            objeto = objeto.strip()
+        partes = pergunta.split(" e ", 1)
 
-            resposta = self.memoria.consultar(objeto)
+        objeto = partes[0].strip()
 
-            if resposta:
+        descricao = partes[1].strip()
 
-                print(f"Lia: {objeto} e {resposta}")
+        self.memoria.aprender(objeto, descricao)
 
-            else:
+        print("Lia: Aprendi isso.")
 
-                print("Lia: Ainda nao sei. Pode me ensinar.")
+    elif intencao == "PERGUNTAR":
+
+        objeto = pergunta_normal
+
+        objeto = objeto.replace("o que e ", "")
+        objeto = objeto.replace("quem e ", "")
+        objeto = objeto.replace("qual e ", "")
+
+        objeto = objeto.strip()
+
+        resposta = self.memoria.consultar(objeto)
+
+        if resposta:
+
+            print(f"Lia: {objeto} e {resposta}")
 
         else:
 
-            print("Lia: Ainda estou aprendendo.")
+            print("Lia: Ainda nao sei isso.")
+
+    else:
+
+        print("Lia: Ainda nao entendi.")
