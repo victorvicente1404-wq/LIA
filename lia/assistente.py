@@ -1,20 +1,27 @@
 from .interpretador import Interpretador
+from .memoria import Memoria
 
 
 class Lia:
 
     def __init__(self):
 
-        self.nome_usuario = ""
         self.interpretador = Interpretador()
+        self.memoria = Memoria()
 
     def iniciar(self):
 
         print("Lia: Ola!")
 
-        self.nome_usuario = input("Lia: Qual e o seu nome? ")
+        nome = self.memoria.ler("nome")
 
-        print(f"Lia: Prazer em conhece-lo, {self.nome_usuario}!")
+        if not nome:
+
+            nome = input("Lia: Qual e o seu nome? ")
+
+            self.memoria.guardar("nome", nome)
+
+        print(f"Lia: Prazer em conhece-lo, {nome}!")
 
         pergunta = input("Voce: ")
 
@@ -22,7 +29,7 @@ class Lia:
 
         if intencao == "PERGUNTAR_NOME":
 
-            print(f"Lia: Seu nome e {self.nome_usuario}.")
+            print(f"Lia: Seu nome e {self.memoria.ler('nome')}.")
 
         else:
 
