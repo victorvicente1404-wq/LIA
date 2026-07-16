@@ -1,1 +1,1 @@
-
+from .assistente import Lia
