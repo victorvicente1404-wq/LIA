@@ -54,6 +54,7 @@ class Lia:
             if len(partes) > 1:
                 objeto = partes[0].strip()
                 descricao = partes[1].strip()
+
                 self.memoria.aprender(objeto, descricao)
                 print("Lia: Aprendi isso.")
             else:
