@@ -2,7 +2,7 @@ class Interpretador:
 
     def normalizar(self, texto):
 
-        texto = texto.lower()
+        texto = texto.lower().strip()
 
         caracteres = {
             "á":"a","à":"a","ã":"a","â":"a",
@@ -22,22 +22,68 @@ class Interpretador:
 
         texto = self.normalizar(texto)
 
+        texto = texto.replace("?", "")
+
+        # ---------- PERGUNTAS ----------
+
+        if texto in [
+            "qual meu nome",
+            "qual e meu nome",
+            "quem sou eu",
+            "como eu me chamo"
+        ]:
+
+            return {
+                "acao": "RESPONDER_NOME"
+            }
+
         if texto.startswith("o que e "):
-            return "PERGUNTAR"
+
+            return {
+                "acao": "CONSULTAR",
+                "objeto": texto[7:].strip()
+            }
 
         if texto.startswith("quem e "):
-            return "PERGUNTAR"
 
-        if texto.startswith("qual e "):
-            return "PERGUNTAR"
+            return {
+                "acao": "CONSULTAR",
+                "objeto": texto[7:].strip()
+            }
+
+        # ---------- APRENDER ----------
 
         if texto.startswith("meu nome e "):
-            return "NOME"
+
+            return {
+                "acao": "SALVAR_NOME",
+                "nome": texto[11:].strip()
+            }
 
         if texto.startswith("gosto de "):
-            return "GOSTO"
+
+            return {
+                "acao": "SALVAR_GOSTO",
+                "gosto": texto[9:].strip()
+            }
+
+        if texto.startswith("meu jogo favorito e "):
+
+            return {
+                "acao": "SALVAR_JOGO",
+                "jogo": texto[20:].strip()
+            }
 
         if " e " in texto:
-            return "APRENDER"
 
-        return "DESCONHECIDO"
+            partes = texto.split(" e ", 1)
+
+            return {
+                "acao": "APRENDER",
+                "objeto": partes[0].strip(),
+                "descricao": partes[1].strip()
+            }
+
+        return {
+            "acao": "DESCONHECIDO"
+        }
