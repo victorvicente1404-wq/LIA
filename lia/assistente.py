@@ -48,31 +48,31 @@ class Lia:
                 print("Lia: Vou lembrar disso.")
       
             elif intencao == "APRENDER":
-            partes = pergunta.split(" e ", 1)
+                partes = pergunta.split(" e ", 1)
             
             # Verifica se o split realmente gerou duas partes
-            if len(partes) > 1:
-                objeto = partes[0].strip()
-                descricao = partes[1].strip()
+                if len(partes) > 1:
+                    objeto = partes[0].strip()
+                    descricao = partes[1].strip()
 
                 self.memoria.aprender(objeto, descricao)
                 print("Lia: Aprendi isso.")
-            else:
-                # Evita o erro caso o formato seja inválido
-                print("Lia: Não entendi o que devo aprender. Use o formato: '[objeto] é [descrição]'.")
+                else:
+                    # Evita o erro caso o formato seja inválido
+                    print("Lia: Não entendi o que devo aprender. Use o formato: '[objeto] é [descrição]'.")
 
 
-            elif intencao == "PERGUNTAR":
+                elif intencao == "PERGUNTAR":
 
-                objeto = pergunta_normal
+                    objeto = pergunta_normal
 
-                objeto = objeto.replace("o que e ", "")
-                objeto = objeto.replace("quem e ", "")
-                objeto = objeto.replace("qual e ", "")
+                    objeto = objeto.replace("o que e ", "")
+                    objeto = objeto.replace("quem e ", "")
+                    objeto = objeto.replace("qual e ", "")
 
-                objeto = objeto.strip()
+                    objeto = objeto.strip()
 
-                resposta = self.memoria.consultar(objeto)
+                    resposta = self.memoria.consultar(objeto)
 
                 if resposta:
 
