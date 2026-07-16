@@ -46,8 +46,8 @@ class Lia:
                 self.memoria.adicionar_gosto(gosto)
 
                 print("Lia: Vou lembrar disso.")
-
-                    elif intencao == "APRENDER":
+      
+            elif intencao == "APRENDER":
             partes = pergunta.split(" e ", 1)
             
             # Verifica se o split realmente gerou duas partes
