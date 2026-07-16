@@ -50,12 +50,12 @@ class Memoria:
     def adicionar_gosto(self, gosto):
         
         dados = self.carregar()
+        
+            if gosto not in dados["preferencias"]["gostos"]:
 
-        if gosto not in dados["preferencias"]["gostos"]:
+            dados["preferencias"]["gostos"].append(gosto)
 
-        dados["preferencias"]["gostos"].append(gosto)
-
-        self.salvar(dados)
+            self.salvar(dados)
         
     def ler_gostos(self):
         
