@@ -28,10 +28,10 @@ class Interpretador:
 
         texto = self.normalizar(texto)
 
-        if "meu nome" in texto:
-            return "PERGUNTAR_NOME"
+        if " o que e " in f" {texto} ":
+            return "PERGUNTAR"
 
-        if "quem eu sou" in texto:
-            return "PERGUNTAR_NOME"
+        if " e " in texto:
+            return "APRENDER"
 
         return "DESCONHECIDO"
