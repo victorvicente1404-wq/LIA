@@ -48,13 +48,11 @@ class Memoria:
         return dados["conhecimento"].get(objeto.lower())
         
     def adicionar_gosto(self, gosto):
-        
-        dados = self.carregar()
-        
-        if gosto not in dados["preferencias"]["gostos"]:
-
+    dados = self.carregar()
+    
+    if gosto not in dados["preferencias"]["gostos"]:
         dados["preferencias"]["gostos"].append(gosto)
-
+        
         self.salvar(dados)
         
     def ler_gostos(self):
