@@ -17,7 +17,16 @@ class Memoria:
 
         with open(self.arquivo, "w", encoding="utf-8") as arquivo:
 
-            json.dump(dados, arquivo, indent=4, ensure_ascii=False)
+            json.dump(
+                dados,
+                arquivo,
+                indent=4,
+                ensure_ascii=False
+            )
+
+    # ==========================
+    # NOME
+    # ==========================
 
     def guardar_nome(self, nome):
 
@@ -33,6 +42,48 @@ class Memoria:
 
         return dados["usuario"]["nome"]
 
+    # ==========================
+    # JOGO FAVORITO
+    # ==========================
+
+    def guardar_jogo_favorito(self, jogo):
+
+        dados = self.carregar()
+
+        dados["preferencias"]["jogo_favorito"] = jogo
+
+        self.salvar(dados)
+
+    def ler_jogo_favorito(self):
+
+        dados = self.carregar()
+
+        return dados["preferencias"].get("jogo_favorito", "")
+
+    # ==========================
+    # GOSTOS
+    # ==========================
+
+    def adicionar_gosto(self, gosto):
+
+        dados = self.carregar()
+
+        if gosto not in dados["preferencias"]["gostos"]:
+
+            dados["preferencias"]["gostos"].append(gosto)
+
+            self.salvar(dados)
+
+    def ler_gostos(self):
+
+        dados = self.carregar()
+
+        return dados["preferencias"]["gostos"]
+
+    # ==========================
+    # CONHECIMENTO
+    # ==========================
+
     def aprender(self, objeto, descricao):
 
         dados = self.carregar()
@@ -46,19 +97,3 @@ class Memoria:
         dados = self.carregar()
 
         return dados["conhecimento"].get(objeto.lower())
-        
-    def adicionar_gosto(self, gosto):
- 
-        dados = self.carregar()
-    
-        if gosto not in dados["preferencias"]["gostos"]:
-
-            dados["preferencias"]["gostos"].append(gosto)
-        
-        self.salvar(dados)
-        
-    def ler_gostos(self):
-        
-        dados = self.carregar()
-        
-        return dados["preferencias"]["gostos"]
