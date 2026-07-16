@@ -18,8 +18,8 @@ class Conhecimento:
 
         resposta = self.memoria.consultar(objeto)
 
-        if resposta:
+        if resposta is None:
 
-            return f"{objeto} e {resposta}"
+            return None
 
-        return None
+        return f"{objeto} e {resposta}"
