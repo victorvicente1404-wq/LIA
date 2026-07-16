@@ -27,6 +27,12 @@ class Lia:
 
             pergunta = input("Voce: ")
 
+            if pergunta.lower() in ["sair", "exit", "tchau"]:
+
+                print("Lia: Ate logo!")
+
+                break
+
             pergunta_normal = self.interpretador.normalizar(pergunta)
 
             intencao = self.interpretador.interpretar(pergunta)
@@ -46,33 +52,36 @@ class Lia:
                 self.memoria.adicionar_gosto(gosto)
 
                 print("Lia: Vou lembrar disso.")
-      
+
             elif intencao == "APRENDER":
+
                 partes = pergunta.split(" e ", 1)
-            
-            # Verifica se o split realmente gerou duas partes
+
                 if len(partes) > 1:
+
                     objeto = partes[0].strip()
+
                     descricao = partes[1].strip()
 
-                self.memoria.aprender(objeto, descricao)
-                print("Lia: Aprendi isso.")
+                    self.memoria.aprender(objeto, descricao)
+
+                    print("Lia: Aprendi isso.")
+
                 else:
-                    # Evita o erro caso o formato seja inválido
-                    print("Lia: Não entendi o que devo aprender. Use o formato: '[objeto] é [descrição]'.")
 
+                    print("Lia: Nao consegui aprender. Tente novamente.")
 
-                elif intencao == "PERGUNTAR":
+            elif intencao == "PERGUNTAR":
 
-                    objeto = pergunta_normal
+                objeto = pergunta_normal
 
-                    objeto = objeto.replace("o que e ", "")
-                    objeto = objeto.replace("quem e ", "")
-                    objeto = objeto.replace("qual e ", "")
+                objeto = objeto.replace("o que e ", "")
+                objeto = objeto.replace("quem e ", "")
+                objeto = objeto.replace("qual e ", "")
 
-                    objeto = objeto.strip()
+                objeto = objeto.strip()
 
-                    resposta = self.memoria.consultar(objeto)
+                resposta = self.memoria.consultar(objeto)
 
                 if resposta:
 
@@ -80,7 +89,7 @@ class Lia:
 
                 else:
 
-                    print("Lia: Ainda nao sei isso.")
+                    print("Lia: Ainda nao sei isso. Pode me ensinar.")
 
             else:
 
