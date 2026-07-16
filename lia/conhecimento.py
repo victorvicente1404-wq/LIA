@@ -6,20 +6,25 @@ class Conhecimento:
 
     def aprender(self, objeto, descricao):
 
-        objeto = objeto.lower().strip()
-
+        objeto = objeto.strip().lower()
         descricao = descricao.strip()
+
+        if objeto == "" or descricao == "":
+            return False
 
         self.memoria.aprender(objeto, descricao)
 
-    def responder(self, objeto):
+        return True
 
-        objeto = objeto.lower().strip()
+    def consultar(self, objeto):
 
-        resposta = self.memoria.consultar(objeto)
+        objeto = objeto.strip().lower()
 
-        if resposta is None:
-
+        if objeto == "":
             return None
 
-        return f"{objeto} e {resposta}"
+        return self.memoria.consultar(objeto)
+
+    def sabe(self, objeto):
+
+        return self.consultar(objeto) is not None
