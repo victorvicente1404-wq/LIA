@@ -1,8 +1,9 @@
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
-    QLabel,
-    QLineEdit
+    QTextEdit,
+    QLineEdit,
+    QLabel
 )
 
 from PySide6.QtCore import Qt
@@ -26,29 +27,27 @@ class Janela(QWidget):
 
         self.resize(500, 650)
 
-        self.layout = QVBoxLayout()
+        layout = QVBoxLayout()
 
-        self.layout.setAlignment(Qt.AlignCenter)
+        layout.setAlignment(Qt.AlignTop)
 
         self.rosto_label = QLabel()
 
         self.rosto_label.setAlignment(Qt.AlignCenter)
 
-        self.rosto_label.setStyleSheet(
-            "font-size:48px;"
+        self.rosto_label.setStyleSheet("""
+            font-size:48px;
+        """)
+
+        self.rosto_label.setText(
+            self.rosto.obter()
         )
 
-        self.texto = QLabel()
+        self.chat = QTextEdit()
 
-        self.texto.setAlignment(Qt.AlignCenter)
+        self.chat.setReadOnly(True)
 
-        self.texto.setWordWrap(True)
-
-        self.texto.setStyleSheet(
-            "font-size:16px;"
-        )
-
-        self.texto.setText("Olá!")
+        self.chat.append("<b>Lia:</b> Ola! Como posso ajudar?")
 
         self.entrada = QLineEdit()
 
@@ -60,31 +59,35 @@ class Janela(QWidget):
             self.enviar
         )
 
-        self.layout.addWidget(self.rosto_label)
+        layout.addWidget(self.rosto_label)
 
-        self.layout.addWidget(self.texto)
+        layout.addWidget(self.chat)
 
-        self.layout.addWidget(self.entrada)
+        layout.addWidget(self.entrada)
 
-        self.setLayout(self.layout)
-
-        self.atualizar_rosto()
-
-    def atualizar_rosto(self):
-
-        self.rosto_label.setText(
-            self.rosto.obter()
-        )
+        self.setLayout(layout)
 
     def enviar(self):
 
-        mensagem = self.entrada.text()
+        mensagem = self.entrada.text().strip()
 
         if mensagem == "":
             return
 
-        resposta = self.lia.responder(mensagem)
+        self.chat.append(
+            f"<b>Voce:</b> {mensagem}"
+        )
 
-        self.texto.setText(resposta)
+        resposta = self.lia.responder(
+            mensagem
+        )
+
+        self.chat.append(
+            f"<b>Lia:</b> {resposta}"
+        )
 
         self.entrada.clear()
+
+        self.chat.verticalScrollBar().setValue(
+            self.chat.verticalScrollBar().maximum()
+        )
