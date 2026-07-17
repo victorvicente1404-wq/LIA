@@ -31,7 +31,7 @@ class Janela(QWidget):
 
         layout.setAlignment(Qt.AlignTop)
 
-        self.rosto_label = QLabel()
+        self.rosto = Rosto()
 
         self.rosto_label.setAlignment(Qt.AlignCenter)
 
@@ -59,7 +59,7 @@ class Janela(QWidget):
             self.enviar
         )
 
-        layout.addWidget(self.rosto_label)
+        layout.addWidget(self.rosto)
 
         layout.addWidget(self.chat)
 
