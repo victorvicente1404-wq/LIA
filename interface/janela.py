@@ -2,8 +2,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
     QTextEdit,
-    QLineEdit,
-    QLabel
+    QLineEdit
 )
 
 from PySide6.QtCore import Qt
@@ -21,8 +20,6 @@ class Janela(QWidget):
 
         self.lia = Lia()
 
-        self.rosto = Rosto()
-
         self.setWindowTitle("Lia")
 
         self.resize(500, 650)
@@ -31,23 +28,27 @@ class Janela(QWidget):
 
         layout.setAlignment(Qt.AlignTop)
 
+        # -------------------------
+        # Rosto
+        # -------------------------
+
         self.rosto = Rosto()
 
-        self.rosto_label.setAlignment(Qt.AlignCenter)
-
-        self.rosto_label.setStyleSheet("""
-            font-size:48px;
-        """)
-
-        self.rosto_label.setText(
-            self.rosto.obter()
-        )
+        # -------------------------
+        # Chat
+        # -------------------------
 
         self.chat = QTextEdit()
 
         self.chat.setReadOnly(True)
 
-        self.chat.append("<b>Lia:</b> Ola! Como posso ajudar?")
+        self.chat.append(
+            "<b>Lia:</b> Ola! Como posso ajudar?"
+        )
+
+        # -------------------------
+        # Entrada
+        # -------------------------
 
         self.entrada = QLineEdit()
 
@@ -58,6 +59,10 @@ class Janela(QWidget):
         self.entrada.returnPressed.connect(
             self.enviar
         )
+
+        # -------------------------
+        # Layout
+        # -------------------------
 
         layout.addWidget(self.rosto)
 
@@ -72,14 +77,23 @@ class Janela(QWidget):
         mensagem = self.entrada.text().strip()
 
         if mensagem == "":
+
             return
 
         self.chat.append(
             f"<b>Voce:</b> {mensagem}"
         )
 
+        self.rosto.definir_estado(
+            "pensando"
+        )
+
         resposta = self.lia.responder(
             mensagem
+        )
+
+        self.rosto.definir_estado(
+            "normal"
         )
 
         self.chat.append(
