@@ -1,1 +1,113 @@
+"""
+Assistente principal da Lia.
 
+Este módulo recebe as mensagens do usuário,
+interpreta a intenção e decide qual módulo utilizar.
+"""
+
+from .interpretador import Interpretador
+from .memoria import Memoria
+from .usuario import Usuario
+from .conhecimento import Conhecimento
+from .respostas import Respostas
+
+
+class Assistente:
+
+    def __init__(self):
+
+        self.memoria = Memoria()
+
+        self.usuario = Usuario(
+            self.memoria
+        )
+
+        self.conhecimento = Conhecimento(
+            self.memoria
+        )
+
+        self.interpretador = Interpretador()
+
+    def responder(self, mensagem):
+
+        mensagem = mensagem.strip()
+
+        if mensagem == "":
+
+            return Respostas.vazia()
+
+        comando = self.interpretador.interpretar(
+            mensagem
+        )
+
+        acao = comando["acao"]
+
+        # ----------------------------
+        # Cumprimento
+        # ----------------------------
+
+        if acao == "CUMPRIMENTO":
+
+            return Respostas.ola()
+
+        # ----------------------------
+        # Nome
+        # ----------------------------
+
+        if acao == "SALVAR_NOME":
+
+            self.usuario.definir_nome(
+                comando["valor"]
+            )
+
+            return Respostas.aprendido()
+
+        if acao == "PERGUNTAR_NOME":
+
+            nome = self.usuario.obter_nome()
+
+            if nome == "":
+
+                return Respostas.nao_sei()
+
+            return Respostas.nome(nome)
+
+        # ----------------------------
+        # Aprender
+        # ----------------------------
+
+        if acao == "APRENDER":
+
+            self.conhecimento.aprender(
+
+                comando["objeto"],
+
+                comando["descricao"]
+
+            )
+
+            return Respostas.aprendido()
+
+        # ----------------------------
+        # Consultar
+        # ----------------------------
+
+        if acao == "CONSULTAR":
+
+            resposta = self.conhecimento.consultar(
+
+                comando["objeto"]
+
+            )
+
+            if resposta is None:
+
+                return Respostas.desconhecido()
+
+            return resposta
+
+        # ----------------------------
+        # Desconhecido
+        # ----------------------------
+
+        return Respostas.nao_entendi()
