@@ -1,1 +1,11 @@
+COR_FUNDO = "#202225"
 
+COR_TEXTO = "#FFFFFF"
+
+COR_DESTAQUE = "#7C5CFF"
+
+COR_INPUT = "#2B2D31"
+
+FONTE = ("Segoe UI", 11)
+
+FONTE_TITULO = ("Segoe UI", 16, "bold")
