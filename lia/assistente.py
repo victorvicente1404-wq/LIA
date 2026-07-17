@@ -1,5 +1,8 @@
 from .interpretador import Interpretador
 from .memoria import Memoria
+from .usuario import Usuario
+from .conhecimento import Conhecimento
+from .respostas import Respostas
 
 
 class Lia:
@@ -7,91 +10,129 @@ class Lia:
     def __init__(self):
 
         self.interpretador = Interpretador()
+
         self.memoria = Memoria()
 
-    def iniciar(self):
+        self.usuario = Usuario(self.memoria)
 
-        print("Lia: Ola!")
+        self.conhecimento = Conhecimento(self.memoria)
 
-        nome = self.memoria.ler_nome()
+    def responder(self, mensagem):
 
-        if nome == "":
-            nome = input("Lia: Qual e o seu nome? ")
-            self.memoria.guardar_nome(nome)
+        resultado = self.interpretador.interpretar(
+            mensagem
+        )
 
-        print(f"Lia: Prazer em conhece-lo, {nome}!")
+        acao = resultado["acao"]
 
-        while True:
+        # ==========================
+        # NOME
+        # ==========================
 
-            pergunta = input("Voce: ")
+        if acao == "SALVAR_NOME":
 
-            if pergunta.lower() in ["sair", "exit", "tchau"]:
-                print("Lia: Ate logo!")
-                break
+            self.usuario.definir_nome(
+                resultado["nome"]
+            )
 
-            resultado = self.interpretador.interpretar(pergunta)
+            return Respostas.APRENDIDO
 
-            acao = resultado["acao"]
+        if acao == "RESPONDER_NOME":
 
-            if acao == "SALVAR_NOME":
+            nome = self.usuario.obter_nome()
 
-                self.memoria.guardar_nome(resultado["nome"])
+            if nome == "":
 
-                print(f"Lia: Entendido. Vou lembrar que seu nome e {resultado['nome']}.")
+                return Respostas.NAO_SEI
 
-            elif acao == "RESPONDER_NOME":
+            return Respostas.nome(nome)
 
-                nome = self.memoria.ler_nome()
+        # ==========================
+        # JOGO FAVORITO
+        # ==========================
 
-                if nome:
-                    print(f"Lia: Seu nome e {nome}.")
-                else:
-                    print("Lia: Ainda nao sei seu nome.")
+        if acao == "SALVAR_JOGO":
 
-            elif acao == "SALVAR_GOSTO":
+            self.usuario.definir_jogo_favorito(
+                resultado["jogo"]
+            )
 
-                self.memoria.adicionar_gosto(resultado["gosto"])
+            return Respostas.APRENDIDO
 
-                print("Lia: Entendido. Vou lembrar disso.")
+        if acao == "RESPONDER_JOGO":
 
-            elif acao == "SALVAR_JOGO":
+            jogo = self.usuario.obter_jogo_favorito()
 
-                self.memoria.guardar_jogo_favorito(resultado["jogo"])
+            if jogo == "":
 
-                print(f"Lia: Legal! Vou lembrar que seu jogo favorito e {resultado['jogo']}.")
+                return Respostas.NAO_SEI
 
-            elif acao == "RESPONDER_JOGO":
+            return Respostas.jogo_favorito(
+                jogo
+            )
 
-                jogo = self.memoria.ler_jogo_favorito()
+        # ==========================
+        # GOSTOS
+        # ==========================
 
-                if jogo:
-                    print(f"Lia: Seu jogo favorito e {jogo}.")
-                else:
-                    print("Lia: Voce ainda nao me contou seu jogo favorito.")
+        if acao == "SALVAR_GOSTO":
 
-            elif acao == "APRENDER":
+            self.usuario.adicionar_gosto(
+                resultado["gosto"]
+            )
 
-                self.memoria.aprender(
-                    resultado["objeto"],
-                    resultado["descricao"]
-                )
+            return Respostas.APRENDIDO
 
-                print(f"Lia: Aprendi o que e {resultado['objeto']}.")
+        # ==========================
+        # APRENDER
+        # ==========================
 
-            elif acao == "CONSULTAR":
+        if acao == "APRENDER":
 
-                resposta = self.memoria.consultar(
+            self.conhecimento.aprender(
+
+                resultado["objeto"],
+
+                resultado["descricao"]
+
+            )
+
+            return Respostas.aprendeu(
+
+                resultado["objeto"]
+
+            )
+
+        # ==========================
+        # CONSULTAR
+        # ==========================
+
+        if acao == "CONSULTAR":
+
+            resposta = self.conhecimento.consultar(
+
+                resultado["objeto"]
+
+            )
+
+            if resposta is None:
+
+                return Respostas.desconhecido(
+
                     resultado["objeto"]
+
                 )
 
-                if resposta:
+            return Respostas.conhecimento(
 
-                    print(f"Lia: {resultado['objeto']} e {resposta}")
+                resultado["objeto"],
 
-                else:
+                resposta
 
-                    print("Lia: Ainda nao sei isso. Pode me ensinar.")
+            )
 
-            else:
+        # ==========================
+        # DESCONHECIDO
+        # ==========================
 
-                print("Lia: Ainda nao entendi.")
+        return Respostas.NAO_ENTENDI
