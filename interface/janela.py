@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import (
-    QApplication,
     QWidget,
     QVBoxLayout,
     QLabel,
@@ -10,6 +9,8 @@ from PySide6.QtCore import Qt
 
 from .rosto import Rosto
 
+from lia.assistente import Lia
+
 
 class Janela(QWidget):
 
@@ -17,11 +18,13 @@ class Janela(QWidget):
 
         super().__init__()
 
+        self.lia = Lia()
+
         self.rosto = Rosto()
 
         self.setWindowTitle("Lia")
 
-        self.setFixedSize(450, 600)
+        self.resize(500, 650)
 
         self.layout = QVBoxLayout()
 
@@ -31,12 +34,8 @@ class Janela(QWidget):
 
         self.rosto_label.setAlignment(Qt.AlignCenter)
 
-        self.rosto_label.setStyleSheet("""
-            font-size: 42px;
-        """)
-
-        self.rosto_label.setText(
-            self.rosto.obter()
+        self.rosto_label.setStyleSheet(
+            "font-size:48px;"
         )
 
         self.texto = QLabel()
@@ -45,34 +44,47 @@ class Janela(QWidget):
 
         self.texto.setWordWrap(True)
 
-        self.texto.setText(
-            "Olá! Como posso ajudar?"
+        self.texto.setStyleSheet(
+            "font-size:16px;"
         )
+
+        self.texto.setText("Olá!")
 
         self.entrada = QLineEdit()
 
         self.entrada.setPlaceholderText(
-            "Digite aqui..."
+            "Digite uma mensagem..."
         )
 
-        self.layout.addWidget(
-            self.rosto_label
+        self.entrada.returnPressed.connect(
+            self.enviar
         )
 
-        self.layout.addWidget(
-            self.texto
-        )
+        self.layout.addWidget(self.rosto_label)
 
-        self.layout.addWidget(
-            self.entrada
-        )
+        self.layout.addWidget(self.texto)
 
-        self.setLayout(
-            self.layout
-        )
+        self.layout.addWidget(self.entrada)
+
+        self.setLayout(self.layout)
+
+        self.atualizar_rosto()
 
     def atualizar_rosto(self):
 
         self.rosto_label.setText(
             self.rosto.obter()
         )
+
+    def enviar(self):
+
+        mensagem = self.entrada.text()
+
+        if mensagem == "":
+            return
+
+        resposta = self.lia.responder(mensagem)
+
+        self.texto.setText(resposta)
+
+        self.entrada.clear()
