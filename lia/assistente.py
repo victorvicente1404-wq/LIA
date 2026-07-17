@@ -104,7 +104,7 @@ class Assistente:
 
                 return Respostas.desconhecido()
 
-            return resposta
+            return Respostas.conhecimento(resposta)
 
         # ----------------------------
         # Desconhecido
