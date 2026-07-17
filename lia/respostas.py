@@ -1,57 +1,73 @@
 class Respostas:
 
-    # ==========================
-    # GERAIS
-    # ==========================
+    @staticmethod
+    def criar(texto, emocao="normal"):
 
-    OLA = "Ola!"
+        return {
+            "texto": texto,
+            "emocao": emocao
+        }
 
-    DESPEDIDA = "Ate logo!"
+    @staticmethod
+    def ola():
 
-    NAO_ENTENDI = "Nao entendi. Pode explicar melhor?"
+        return Respostas.criar(
+            "Ola!",
+            "feliz"
+        )
 
-    NAO_SEI = "Ainda nao sei isso. Pode me ensinar?"
+    @staticmethod
+    def aprendido():
 
-    APRENDIDO = "Entendido. Vou lembrar disso."
+        return Respostas.criar(
+            "Entendido. Vou lembrar disso.",
+            "feliz"
+        )
 
-    # ==========================
-    # USUARIO
-    # ==========================
+    @staticmethod
+    def nao_entendi():
+
+        return Respostas.criar(
+            "Nao entendi. Pode explicar melhor.",
+            "confuso"
+        )
+
+    @staticmethod
+    def nao_sei():
+
+        return Respostas.criar(
+            "Ainda nao sei isso.",
+            "pensando"
+        )
 
     @staticmethod
     def nome(nome):
 
-        return f"Seu nome e {nome}."
+        return Respostas.criar(
+            f"Seu nome e {nome}.",
+            "feliz"
+        )
 
     @staticmethod
-    def jogo_favorito(jogo):
+    def jogo(jogo):
 
-        return f"Seu jogo favorito e {jogo}."
-
-    @staticmethod
-    def gosto(gosto):
-
-        return f"Entendi. Vou lembrar que voce gosta de {gosto}."
-
-    # ==========================
-    # CONHECIMENTO
-    # ==========================
+        return Respostas.criar(
+            f"Seu jogo favorito e {jogo}.",
+            "feliz"
+        )
 
     @staticmethod
     def conhecimento(objeto, descricao):
 
-        return f"{objeto} e {descricao}."
-
-    @staticmethod
-    def aprendeu(objeto):
-
-        return f"Aprendi sobre {objeto}."
-
-    # ==========================
-    # ERROS
-    # ==========================
+        return Respostas.criar(
+            f"{objeto} e {descricao}.",
+            "normal"
+        )
 
     @staticmethod
     def desconhecido(objeto):
 
-        return f"Ainda nao sei o que e {objeto}. Pode me ensinar?"
+        return Respostas.criar(
+            f"Ainda nao sei o que e {objeto}.",
+            "pensando"
+        )
