@@ -1,12 +1,14 @@
-from lia import Lia
+import sys
+
+from PySide6.QtWidgets import QApplication
+
+from interface.janela import Janela
 
 
-def main():
+app = QApplication(sys.argv)
 
-    lia = Lia()
+janela = Janela()
 
-    lia.iniciar()
+janela.show()
 
-
-if __name__ == "__main__":
-    main()
+app.exec()
