@@ -1,14 +1,25 @@
+"""
+Ponto de entrada da Lia.
+"""
+
 import sys
 
 from PySide6.QtWidgets import QApplication
 
-from interface.janela import Janela
+from interface import Janela
 
 
-app = QApplication(sys.argv)
+def main():
 
-janela = Janela()
+    app = QApplication(sys.argv)
 
-janela.show()
+    janela = Janela()
 
-app.exec()
+    janela.show()
+
+    sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+
+    main()
