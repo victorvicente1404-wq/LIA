@@ -76,7 +76,7 @@ class Janela(QWidget):
 
         mensagem = self.entrada.text().strip()
 
-        if mensagem == "":
+        if not mensagem:
 
             return
 
@@ -92,16 +92,20 @@ class Janela(QWidget):
             mensagem
         )
 
-        self.rosto.definir_estado(
-            "normal"
-        )
-
         self.chat.append(
             f"<b>Lia:</b> {resposta}"
         )
 
+        self.rosto.definir_estado(
+            "normal"
+        )
+
         self.entrada.clear()
 
-        self.chat.verticalScrollBar().setValue(
+        barra = self.chat.verticalScrollBar()
+
+        barra.setValue(
+            barra.maximum()
+        )        self.chat.verticalScrollBar().setValue(
             self.chat.verticalScrollBar().maximum()
         )
