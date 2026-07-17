@@ -1,57 +1,146 @@
-class Rosto:
+from PySide6.QtWidgets import QWidget
+
+from PySide6.QtGui import (
+    QPainter,
+    QColor,
+    QPen,
+    QBrush
+)
+
+from PySide6.QtCore import Qt
+
+
+class Rosto(QWidget):
 
     def __init__(self):
 
-        self.olho_esquerdo = "◕"
-        self.olho_direito = "◕"
-        self.boca = "◡"
+        super().__init__()
 
-    def normal(self):
+        self.setMinimumSize(250, 250)
 
-        self.olho_esquerdo = "◕"
-        self.olho_direito = "◕"
-        self.boca = "◡"
+        self.estado = "normal"
 
-    def feliz(self):
+    def definir_estado(self, estado):
 
-        self.olho_esquerdo = "^"
-        self.olho_direito = "^"
-        self.boca = "◡"
+        self.estado = estado
 
-    def pensando(self):
+        self.update()
 
-        self.olho_esquerdo = "•"
-        self.olho_direito = "•"
-        self.boca = "-"
+    def paintEvent(self, event):
 
-    def surpresa(self):
+        painter = QPainter(self)
 
-        self.olho_esquerdo = "○"
-        self.olho_direito = "○"
-        self.boca = "O"
-
-    def triste(self):
-
-        self.olho_esquerdo = "◕"
-        self.olho_direito = "◕"
-        self.boca = "︵"
-
-    def piscar(self):
-
-        self.olho_esquerdo = "^"
-        self.olho_direito = "◕"
-        self.boca = "◡"
-
-    def falar(self):
-
-        self.olho_esquerdo = "◕"
-        self.olho_direito = "◕"
-        self.boca = "○"
-
-    def obter(self):
-
-        return (
-            f"({self.olho_esquerdo} "
-            f"{self.boca} "
-            f"{self.olho_direito})"
+        painter.setRenderHint(
+            QPainter.Antialiasing
         )
+
+        painter.fillRect(
+            self.rect(),
+            QColor("#202225")
+        )
+
+        painter.setBrush(
+            QBrush(
+                QColor("white")
+            )
+        )
+
+        painter.setPen(
+            Qt.NoPen
+        )
+
+        # -------------------------
+        # OLHOS
+        # -------------------------
+
+        if self.estado == "piscando":
+
+            painter.setPen(
+                QPen(
+                    QColor("white"),
+                    4
+                )
+            )
+
+            painter.drawLine(
+                70,
+                90,
+                110,
+                90
+            )
+
+            painter.drawLine(
+                140,
+                90,
+                180,
+                90
+            )
+
+        else:
+
+            painter.drawEllipse(
+                70,
+                70,
+                40,
+                40
+            )
+
+            painter.drawEllipse(
+                140,
+                70,
+                40,
+                40
+            )
+
+        # -------------------------
+        # BOCA
+        # -------------------------
+
+        painter.setPen(
+            QPen(
+                QColor("white"),
+                4
+            )
+        )
+
+        if self.estado == "feliz":
+
+            painter.drawArc(
+                90,
+                120,
+                70,
+                40,
+                0,
+                -180 * 16
+            )
+
+        elif self.estado == "triste":
+
+            painter.drawArc(
+                90,
+                145,
+                70,
+                40,
+                0,
+                180 * 16
+            )
+
+        elif self.estado == "falando":
+
+            painter.drawEllipse(
+                115,
+                135,
+                20,
+                30
+            )
+
+        else:
+
+            painter.drawArc(
+                90,
+                130,
+                70,
+                25,
+                0,
+                -180 * 16
+            )
