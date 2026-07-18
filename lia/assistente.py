@@ -85,9 +85,14 @@ class Assistente:
 
             if resposta:
 
-                return Respostas.conhecimento(
+                self.conhecimento.aprender(
+                    objeto,
                     resposta
                 )
+
+    return Respostas.conhecimento(
+        resposta
+    )
 
             # Não encontrou -> pesquisar
             resposta = Pesquisa.pesquisar(
