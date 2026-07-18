@@ -70,20 +70,43 @@ class Assistente:
 
             return Respostas.aprendido()
 
-        # ----------------------------
-        # Consultar
-        # ----------------------------
+       # ----------------------------
+       # Consultar
+       # ----------------------------
 
-        if acao == "CONSULTAR":
+       if acao == "CONSULTAR":
 
+            objeto = comando["objeto"]
+
+            # Procura na memória
             resposta = self.conhecimento.consultar(
-                comando["objeto"]
+                objeto
             )
 
-            if resposta is None:
-                return Respostas.desconhecido()
+            if resposta:
 
-            return Respostas.conhecimento(resposta)
+                return Respostas.conhecimento(
+                    resposta
+                )
+
+            # Não encontrou -> pesquisar
+            resposta = Pesquisa.pesquisar(
+                objeto
+            )
+
+            if resposta:
+
+                # Aprende automaticamente
+                self.conhecimento.aprender(
+                    objeto,
+                    resposta
+                )
+
+                return Respostas.conhecimento(
+                    resposta
+                )
+
+            return Respostas.desconhecido()
 
         # ----------------------------
         # Desconhecido
