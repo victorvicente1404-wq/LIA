@@ -1,37 +1,43 @@
-"""
-Ferramenta de Pesquisa na Web
-"""
+import logging
+from duckduckgo_search import DDGS
 
-import requests
-from bs4 import BeautifulSoup
+# Configuração do Logger para registrar o comportamento da busca
+logger = logging.getLogger(__name__)
 
-class Pesquisa:
-    @staticmethod
-    def buscar(query: str, max_resultados=3):
-        try:
-            url = f"https://html.duckduckgo.com/html/?q={requests.utils.quote(query)}"
-            headers = {"User-Agent": "LIA-Assistent/1.0"}
+def pesquisar_web(termo: str, max_resultados: int = 3) -> list:
+    """
+    Realiza uma busca rápida na internet utilizando o motor do DuckDuckGo.
+    
+    Argumentos:
+        termo (str): A frase ou palavra-chave que o usuário quer pesquisar.
+        max_resultados (int): O limite de links que queremos retornar (padrão: 3).
+        
+    Retorna:
+        list: Uma lista de dicionários contendo 'titulo', 'link' e 'resumo'.
+    """
+    try:
+        logger.info(f"Iniciando pesquisa web para o termo: '{termo}'")
+        
+        # Instancia o buscador do DuckDuckGo
+        with DDGS() as ddgs:
+            resultados = list(ddgs.text(termo, max_results=max_resultados))
             
-            r = requests.get(url, headers=headers, timeout=10)
-            r.raise_for_status()
+        if not resultados:
+            logger.warning(f"Nenhum resultado foi encontrado para a busca: '{termo}'")
+            return []
             
-            soup = BeautifulSoup(r.text, 'html.parser')
-            results = soup.find_all('div', class_='result__body')[:max_resultados]
+        # Formata e limpa a resposta para manter o sistema leve
+        resultados_formatados = []
+        for res in resultados:
+            resultados_formatados.append({
+                "titulo": res.get("title", "Sem título"),
+                "link": res.get("href", ""),
+                "resumo": res.get("body", "Sem descrição disponível.")
+            })
             
-            if not results:
-                return "Não encontrei resultados para essa busca."
-            
-            resposta = f"🔍 Resultados para '{query}':\n\n"
-            for i, result in enumerate(results):
-                titulo = result.find('a', class_='result__a')
-                snippet = result.find('a', class_='result__snippet')
-                
-                if titulo:
-                    resposta += f"{i+1}. {titulo.get_text().strip()}\n"
-                if snippet:
-                    resposta += f"   {snippet.get_text().strip()[:180]}...\n\n"
-            
-            return resposta.strip()
-            
-        except Exception as e:
-            return f"⚠️ Erro na pesquisa: {str(e)[:80]}"
+        logger.info(f"Pesquisa concluída com sucesso. {len(resultados_formatados)} resultados obtidos.")
+        return resultados_formatados
+
+    except Exception as e:
+        logger.error(f"Erro crítico ao executar a pesquisa na internet: {e}", exc_info=True)
+        return []
