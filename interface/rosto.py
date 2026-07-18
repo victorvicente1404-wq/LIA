@@ -1,7 +1,5 @@
 """
 Rosto da Lia.
-
-Este widget desenha o rosto da assistente.
 """
 
 from PySide6.QtWidgets import QWidget
@@ -25,11 +23,8 @@ class Rosto(QWidget):
         self.estado = "normal"
 
         self.setMinimumSize(
-
             Tema.TAMANHO_ROSTO,
-
             Tema.TAMANHO_ROSTO
-
         )
 
     # ---------------------------------
@@ -37,7 +32,6 @@ class Rosto(QWidget):
     def definir_estado(self, estado):
 
         self.estado = estado
-
         self.update()
 
     # ---------------------------------
@@ -47,199 +41,75 @@ class Rosto(QWidget):
         painter = QPainter(self)
 
         painter.setRenderHint(
-
             QPainter.Antialiasing
-
         )
 
         painter.fillRect(
-
             self.rect(),
-
             QColor(Tema.FUNDO)
-
         )
 
+        # ------------------------------
+        # Olhos
+        # ------------------------------
+
         painter.setBrush(
-
-            QBrush(
-
-                QColor(Tema.ROSTO)
-
-            )
-
+            QBrush(QColor(Tema.OLHOS))
         )
 
         painter.setPen(Qt.NoPen)
 
-        # ------------------------------
-        # OLHOS
-        # ------------------------------
-
         if self.estado == "piscando":
 
             painter.setPen(
-
-                QPen(
-
-                    QColor(Tema.OLHOS),
-
-                    4
-
-                )
-
+                QPen(QColor(Tema.OLHOS), 4)
             )
 
-            painter.drawLine(
-
-                80,
-
-                90,
-
-                120,
-
-                90
-
-            )
-
-            painter.drawLine(
-
-                180,
-
-                90,
-
-                220,
-
-                90
-
-            )
+            painter.drawLine(80, 90, 120, 90)
+            painter.drawLine(180, 90, 220, 90)
 
         else:
 
-            painter.setBrush(
-
-                QColor(Tema.OLHOS)
-
-            )
-
-            painter.drawEllipse(
-
-                80,
-
-                70,
-
-                40,
-
-                40
-
-            )
-
-            painter.drawEllipse(
-
-                180,
-
-                70,
-
-                40,
-
-                40
-
-            )
+            painter.drawEllipse(80, 70, 40, 40)
+            painter.drawEllipse(180, 70, 40, 40)
 
         # ------------------------------
-        # BOCA
+        # Boca
         # ------------------------------
 
         painter.setPen(
-
-            QPen(
-
-                QColor(Tema.BOCA),
-
-                4
-
-            )
-
+            QPen(QColor(Tema.BOCA), 4)
         )
 
         if self.estado == "feliz":
 
             painter.drawArc(
-
-                95,
-
-                140,
-
-                110,
-
-                50,
-
-                0,
-
-                -180 * 16
-
+                95, 140, 110, 50,
+                0, -180 * 16
             )
 
         elif self.estado == "triste":
 
             painter.drawArc(
-
-                95,
-
-                165,
-
-                110,
-
-                50,
-
-                0,
-
-                180 * 16
-
+                95, 165, 110, 50,
+                0, 180 * 16
             )
 
         elif self.estado == "falando":
 
             painter.drawEllipse(
-
-                135,
-
-                145,
-
-                30,
-
-                40
-
+                135, 145, 30, 40
             )
 
         elif self.estado == "pensando":
 
             painter.drawLine(
-
-                120,
-
-                160,
-
-                180,
-
-                160
-
+                120, 160, 180, 160
             )
 
         else:
 
             painter.drawArc(
-
-                95,
-
-                150,
-
-                110,
-
-                30,
-
-                0,
-
-                -180 * 16
-
+                95, 150, 110, 30,
+                0, -180 * 16
             )
