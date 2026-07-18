@@ -1,30 +1,44 @@
 """
 Kernel da Lia - Central de controle
+Roteador de ferramentas externas
 """
 
-from .assistente import Assistente
-from ia.roteador import Roteador
+from .assistente import Assistente  # Note: pode precisar ajustar import
 
-class Kernel:
+
+class Roteador:
+    """
+    Responsável por decidir se deve usar ferramentas externas
+    antes de cair no assistente principal.
+    """
+
     def __init__(self):
-        self.assistente = Assistente()
-        self.roteador = Roteador()
-        self.iniciado = False
+        self.assistente = Assistente()  # fallback
 
-    def iniciar(self):
-        if self.iniciado:
-            return
-        self.iniciado = True
-        print("🧠 Lia Kernel iniciado com sucesso!")
+    def decidir(self, mensagem: str) -> str:
+        """
+        Analisa a mensagem e decide se deve usar alguma ferramenta especial.
+        Retorna a resposta se encontrou, senão retorna None.
+        """
+        mensagem_lower = mensagem.lower().strip()
 
-    def responder(self, mensagem: str) -> str:
-        if not mensagem.strip():
-            return "Pode falar algo para mim?"
+        # Exemplos de rotas futuras:
+        # if "clima" in mensagem_lower or "tempo" in mensagem_lower:
+        #     return self.ferramenta_tempo(mensagem)
 
-        # Tenta ferramentas externas primeiro
-        resposta_externa = self.roteador.decidir(mensagem)
-        if resposta_externa:
-            return resposta_externa
+        # if "calcular" in mensagem_lower or any(c.isdigit() for c in mensagem):
+        #     from ferramentas.calculadora import Calculadora
+        #     return Calculadora.calcular(mensagem)
 
-        # Usa o assistente local
-        return self.assistente.responder(mensagem)
+        # Por enquanto, retorna None para usar o fluxo normal (pesquisa)
+        return None
+
+    # ------------------- Ferramentas futuras -------------------
+
+    def ferramenta_tempo(self, mensagem):
+        """Exemplo de integração futura."""
+        return None
+
+    def ferramenta_calculadora(self, mensagem):
+        """Exemplo de integração futura."""
+        return None
