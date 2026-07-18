@@ -1,8 +1,5 @@
 """
 Assistente principal da Lia.
-
-Este módulo recebe as mensagens do usuário,
-interpreta a intenção e decide qual módulo utilizar.
 """
 
 from .interpretador import Interpretador
@@ -17,15 +14,8 @@ class Assistente:
     def __init__(self):
 
         self.memoria = Memoria()
-
-        self.usuario = Usuario(
-            self.memoria
-        )
-
-        self.conhecimento = Conhecimento(
-            self.memoria
-        )
-
+        self.usuario = Usuario(self.memoria)
+        self.conhecimento = Conhecimento(self.memoria)
         self.interpretador = Interpretador()
 
     def responder(self, mensagem):
@@ -33,13 +23,9 @@ class Assistente:
         mensagem = mensagem.strip()
 
         if mensagem == "":
-
             return Respostas.vazia()
 
-        comando = self.interpretador.interpretar(
-            mensagem
-        )
-
+        comando = self.interpretador.interpretar(mensagem)
         acao = comando["acao"]
 
         # ----------------------------
@@ -47,7 +33,6 @@ class Assistente:
         # ----------------------------
 
         if acao == "CUMPRIMENTO":
-
             return Respostas.ola()
 
         # ----------------------------
@@ -67,7 +52,6 @@ class Assistente:
             nome = self.usuario.obter_nome()
 
             if nome == "":
-
                 return Respostas.nao_sei()
 
             return Respostas.nome(nome)
@@ -79,11 +63,8 @@ class Assistente:
         if acao == "APRENDER":
 
             self.conhecimento.aprender(
-
                 comando["objeto"],
-
                 comando["descricao"]
-
             )
 
             return Respostas.aprendido()
@@ -95,13 +76,10 @@ class Assistente:
         if acao == "CONSULTAR":
 
             resposta = self.conhecimento.consultar(
-
                 comando["objeto"]
-
             )
 
             if resposta is None:
-
                 return Respostas.desconhecido()
 
             return Respostas.conhecimento(resposta)
