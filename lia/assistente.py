@@ -70,46 +70,27 @@ class Assistente:
 
             return Respostas.aprendido()
 
-       # ----------------------------
-       # Consultar
-       # ----------------------------
+        # ----------------------------
+        # Consultar (Integração de Pesquisa)
+        # ----------------------------
 
-       if acao == "CONSULTAR":
+        if acao == "CONSULTAR":
 
             objeto = comando["objeto"]
 
-            # Procura na memória
-            resposta = self.conhecimento.consultar(
-                objeto
-            )
+            # Procura primeiro no conhecimento local
+            resposta = self.conhecimento.consultar(objeto)
 
             if resposta:
+                return Respostas.conhecimento(resposta)
 
-                self.conhecimento.aprender(
-                    objeto,
-                    resposta
-                )
-
-                return Respostas.conhecimento(
-                    resposta
-                )
-
-            # Não encontrou -> pesquisar
-            resposta = Pesquisa.pesquisar(
-                objeto
-            )
+            # Não encontrou localmente → pesquisa na internet
+            resposta = Pesquisa.pesquisar(objeto)
 
             if resposta:
-
-                # Aprende automaticamente
-                self.conhecimento.aprender(
-                    objeto,
-                    resposta
-                )
-
-                return Respostas.conhecimento(
-                    resposta
-                )
+                # Aprende automaticamente para próximas vezes
+                self.conhecimento.aprender(objeto, resposta)
+                return Respostas.conhecimento(resposta)
 
             return Respostas.desconhecido()
 
