@@ -90,9 +90,9 @@ class Assistente:
                     resposta
                 )
 
-    return Respostas.conhecimento(
-        resposta
-    )
+                return Respostas.conhecimento(
+                    resposta
+                )
 
             # Não encontrou -> pesquisar
             resposta = Pesquisa.pesquisar(
