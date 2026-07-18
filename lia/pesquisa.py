@@ -1,52 +1,84 @@
-import logging
-from ferramentas.pesquisa import pesquisar_web
+"""
+Módulo de pesquisa da Lia - Integração principal para responder dúvidas do usuário
+"""
 
-# Configuração do Logger
-logger = logging.getLogger(__name__)
+import requests
 
-class SistemaPesquisa:
-    def __init__(self):
-        """
-        Inicializa o gerenciador do sistema de pesquisas da LIA.
-        """
-        pass
 
-    def pesquisar_e_sintetizar(self, pergunta: str) -> str:
-        """
-        Realiza a pesquisa baseada na dúvida do usuário e formata os dados
-        em um bloco de texto legível para enriquecer o contexto da IA.
-        
-        Argumentos:
-            pergunta (str): A dúvida ou comando enviado pelo usuário.
-            
-        Retorna:
-            str: Bloco de texto com os dados da internet ou mensagem de erro.
-        """
-        logger.info(f"SistemaPesquisa acionado para a pergunta: '{pergunta}'")
-        
-        # Executa a busca web trazendo até 3 resultados
-        resultados = pesquisar_web(pergunta, max_resultados=3)
-        
-        if not resultados:
-            logger.warning("SistemaPesquisa não obteve resultados válidos da ferramenta web.")
-            return "AVISO DO SISTEMA: Não foi possível obter informações recentes da internet para esta pergunta."
-            
-        # Constrói o cabeçalho do contexto que a IA vai ler
-        contexto = (
-            "=========================================================\n"
-            "INFORMAÇÕES EM TEMPO REAL OBTIDAS DA INTERNET:\n"
-            "Use os dados abaixo para responder ao usuário com precisão.\n"
-            "=========================================================\n\n"
-        )
-        
-        # Adiciona cada resultado formatado ao bloco de texto
-        for i, res in enumerate(resultados, 1):
-            contexto += f"Fonte [{i}]: {res['titulo']}\n"
-            contexto += f"Link de Referência: {res['link']}\n"
-            contexto += f"Conteúdo extraído: {res['resumo']}\n"
-            contexto += "---------------------------------------------------------\n"
-            
-        contexto += "\nFIM DAS INFORMAÇÕES DA INTERNET. Prossiga com a resposta final utilizando os dados acima."
-        
-        logger.info("Contexto de pesquisa gerado e sintetizado com sucesso.")
-        return contexto
+class Pesquisa:
+    """
+    Classe responsável por buscar informações na internet
+    quando a Lia não sabe a resposta.
+    """
+
+    @staticmethod
+    def pesquisar(pergunta: str):
+        """Método principal de pesquisa. Tenta várias fontes."""
+
+        # 1. Tenta Wikipédia primeiro (melhor para definições e fatos)
+        resposta = Pesquisa.pesquisar_wikipedia(pergunta)
+        if resposta and len(resposta.strip()) > 30:
+            return resposta.strip()
+
+        # 2. Tenta DuckDuckGo como fallback
+        resposta = Pesquisa.pesquisar_duckduckgo(pergunta)
+        if resposta and len(resposta.strip()) > 30:
+            return resposta.strip()
+
+        return None
+
+    @staticmethod
+    def pesquisar_wikipedia(pergunta: str):
+        """Busca na Wikipédia em português."""
+        try:
+            # Formata o título para URL
+            titulo = pergunta.replace(" ", "_")
+            url = f"https://pt.wikipedia.org/api/rest_v1/page/summary/{titulo}"
+
+            resposta = requests.get(
+                url,
+                headers={"User-Agent": "Lia-Assistent/1.0"},
+                timeout=10
+            )
+
+            if resposta.status_code != 200:
+                return None
+
+            dados = resposta.json()
+            texto = dados.get("extract")
+
+            return texto if texto else None
+
+        except Exception:
+            return None
+
+    @staticmethod
+    def pesquisar_duckduckgo(pergunta: str):
+        """Busca via API do DuckDuckGo."""
+        try:
+            resposta = requests.get(
+                "https://api.duckduckgo.com/",
+                params={
+                    "q": pergunta,
+                    "format": "json",
+                    "no_redirect": 1,
+                    "no_html": 1
+                },
+                timeout=10
+            )
+
+            dados = resposta.json()
+
+            # Resumo principal
+            if dados.get("AbstractText"):
+                return dados["AbstractText"]
+
+            # Tópicos relacionados
+            for item in dados.get("RelatedTopics", []):
+                if isinstance(item, dict) and item.get("Text"):
+                    return item["Text"]
+
+            return None
+
+        except Exception:
+            return None
