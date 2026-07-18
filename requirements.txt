@@ -3,3 +3,8 @@ openai
 pyautogui
 speechrecognition
 pyttsx3
+PySide6
+requests
+beautifulsoup4
+lxml
+python-dotenv
