@@ -26,7 +26,6 @@ class Janela(QWidget):
         self.kernel.iniciar()
 
         self.setWindowTitle("Lia")
-
         self.resize(
             Tema.LARGURA_JANELA,
             Tema.ALTURA_JANELA
@@ -60,20 +59,14 @@ class Janela(QWidget):
         # -------------------------
 
         self.rosto = Rosto()
-
-        layout.addWidget(
-            self.rosto
-        )
+        layout.addWidget(self.rosto)
 
         # -------------------------
         # Chat
         # -------------------------
 
         self.chat = Chat()
-
-        layout.addWidget(
-            self.chat
-        )
+        layout.addWidget(self.chat)
 
         # -------------------------
         # Entrada
@@ -82,35 +75,21 @@ class Janela(QWidget):
         linha = QHBoxLayout()
 
         self.entrada = EntradaLia()
-
-        self.entrada.returnPressed.connect(
-            self.enviar
-        )
+        self.entrada.returnPressed.connect(self.enviar)
 
         self.botao = BotaoLia("Enviar")
+        self.botao.clicked.connect(self.enviar)
 
-        self.botao.clicked.connect(
-            self.enviar
-        )
+        linha.addWidget(self.entrada)
+        linha.addWidget(self.botao)
 
-        linha.addWidget(
-            self.entrada
-        )
+        layout.addLayout(linha)
 
-        linha.addWidget(
-            self.botao
-        )
+        self.setLayout(layout)
 
-        layout.addLayout(
-            linha
-        )
-
-        self.setLayout(
-            layout
-        )
-
+        # Mensagem inicial
         self.chat.adicionar_lia(
-            "Olá! Eu sou a Lia."
+            "Olá! Eu sou a Lia. Como posso te ajudar hoje?"
         )
 
     # ---------------------------------
@@ -122,24 +101,15 @@ class Janela(QWidget):
         if mensagem == "":
             return
 
-        self.chat.adicionar_usuario(
-            mensagem
-        )
+        self.chat.adicionar_usuario(mensagem)
 
-        self.rosto.definir_estado(
-            "pensando"
-        )
+        self.rosto.definir_estado("pensando")
 
-        resposta = self.kernel.responder(
-            mensagem
-        )
+        # Chama o Kernel para processar (inclui pesquisa)
+        resposta = self.kernel.responder(mensagem)
 
-        self.chat.adicionar_lia(
-            resposta
-        )
+        self.chat.adicionar_lia(resposta)
 
-        self.rosto.definir_estado(
-            "normal"
-        )
+        self.rosto.definir_estado("normal")
 
         self.entrada.clear()
