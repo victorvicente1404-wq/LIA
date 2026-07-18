@@ -1,11 +1,5 @@
 """
 Interpretador da Lia.
-
-Converte frases do usuário em comandos internos.
-
-No futuro este módulo poderá utilizar modelos
-de IA, mantendo a mesma interface para o resto
-do sistema.
 """
 
 import re
@@ -13,42 +7,35 @@ import re
 
 class Interpretador:
 
-    def __init__(self):
+    def interpretar(self, frase):
 
-        self.cumprimentos = [
+        frase = frase.strip()
+
+        frase_lower = frase.lower()
+
+        # -------------------------
+        # Cumprimento
+        # -------------------------
+
+        if frase_lower in [
 
             "oi",
-            "ola",
+
             "olá",
+
+            "ola",
+
+            "e ai",
+
+            "e aí",
+
             "bom dia",
+
             "boa tarde",
+
             "boa noite"
 
-        ]
-
-    # ---------------------------------
-
-    def normalizar(self, texto):
-
-        texto = texto.lower()
-
-        texto = texto.strip()
-
-        return texto
-
-    # ---------------------------------
-
-    def interpretar(self, texto):
-
-        original = texto
-
-        texto = self.normalizar(texto)
-
-        # ------------------------------
-        # Cumprimentos
-        # ------------------------------
-
-        if texto in self.cumprimentos:
+        ]:
 
             return {
 
@@ -56,59 +43,41 @@ class Interpretador:
 
             }
 
-        # ------------------------------
-        # Nome
-        # ------------------------------
+        # -------------------------
+        # Meu nome é...
+        # -------------------------
 
-        padroes_nome = [
+        if frase_lower.startswith("meu nome é "):
 
-            r"meu nome e (.+)",
+            return {
 
-            r"meu nome é (.+)",
+                "acao": "SALVAR_NOME",
 
-            r"eu me chamo (.+)",
+                "valor": frase[11:].strip()
 
-            r"pode me chamar de (.+)"
+            }
 
-        ]
+        # -------------------------
 
-        for padrao in padroes_nome:
+        if frase_lower.startswith("meu nome e "):
 
-            resultado = re.match(
+            return {
 
-                padrao,
+                "acao": "SALVAR_NOME",
 
-                texto
+                "valor": frase[11:].strip()
 
-            )
+            }
 
-            if resultado:
+        # -------------------------
 
-                return {
+        if frase_lower in [
 
-                    "acao": "SALVAR_NOME",
+            "qual meu nome",
 
-                    "valor": resultado.group(1).strip()
+            "como eu me chamo"
 
-                }
-
-        # ------------------------------
-        # Perguntar nome
-        # ------------------------------
-
-        perguntas_nome = [
-
-            "qual e meu nome",
-
-            "qual é meu nome",
-
-            "quem sou eu",
-
-            "quem eu sou"
-
-        ]
-
-        if texto in perguntas_nome:
+        ]:
 
             return {
 
@@ -116,67 +85,65 @@ class Interpretador:
 
             }
 
-        # ------------------------------
+        # -------------------------
         # Aprender
-        # ------------------------------
+        # -------------------------
 
-        if " e " in texto:
+        if frase_lower.startswith("aprenda que "):
 
-            partes = texto.split(
+            texto = frase[12:]
 
-                " e ",
+            partes = re.split(
 
-                1
+                r"\s+é\s+|\s+e\s+",
+
+                texto,
+
+                maxsplit=1,
+
+                flags=re.IGNORECASE
 
             )
 
-            objeto = partes[0].strip()
-
-            descricao = partes[1].strip()
-
-            if objeto != "" and descricao != "":
+            if len(partes) == 2:
 
                 return {
 
                     "acao": "APRENDER",
 
-                    "objeto": objeto,
+                    "objeto": partes[0].strip().lower(),
 
-                    "descricao": descricao
+                    "descricao": partes[1].strip()
 
                 }
 
-        # ------------------------------
+        # -------------------------
         # Consultar
-        # ------------------------------
+        # -------------------------
 
-        perguntas = [
-
-            "o que e ",
+        consultas = [
 
             "o que é ",
 
-            "quem e ",
+            "o que e ",
 
             "quem é ",
 
-            "qual e ",
+            "quem e ",
 
-            "qual é "
+            "qual é ",
+
+            "qual e "
 
         ]
 
-        for pergunta in perguntas:
+        for inicio in consultas:
 
-            if texto.startswith(pergunta):
+            if frase_lower.startswith(inicio):
 
-                objeto = texto.replace(
+                objeto = frase_lower[len(inicio):]
 
-                    pergunta,
-
-                    ""
-
-                ).strip()
+                objeto = objeto.replace("?", "").strip()
 
                 return {
 
@@ -186,12 +153,10 @@ class Interpretador:
 
                 }
 
-        # ------------------------------
+        # -------------------------
 
         return {
 
-            "acao": "DESCONHECIDO",
-
-            "texto": original
+            "acao": "DESCONHECIDO"
 
         }
