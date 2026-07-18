@@ -1,161 +1,85 @@
 """
-Sistema de conhecimento da Lia.
-
-Este módulo controla tudo o que a Lia aprende.
-No futuro ele também será responsável por
-pesquisar na internet, consultar outras IAs
-e validar informações.
+Gerencia os conhecimentos da Lia.
 """
+
+import json
+import os
 
 
 class Conhecimento:
 
-    def __init__(self, memoria):
+    def __init__(self, memoria=None):
 
-        self.memoria = memoria
+        self.arquivo = "dados/conhecimento.json"
 
-    # -------------------------
-    # Aprender
-    # -------------------------
+        self.conhecimentos = {}
 
-    def aprender(
-
-        self,
-
-        objeto,
-
-        descricao
-
-    ):
-
-        objeto = objeto.strip().lower()
-
-        descricao = descricao.strip()
-
-        self.memoria.aprender(
-
-            objeto,
-
-            descricao
-
-        )
+        self.carregar()
 
     # -------------------------
-    # Consultar
-    # -------------------------
 
-    def consultar(
+    def carregar(self):
 
-        self,
+        if os.path.exists(self.arquivo):
 
-        objeto
+            with open(
 
-    ):
+                self.arquivo,
 
-        objeto = objeto.strip().lower()
+                "r",
 
-        return self.memoria.consultar(
+                encoding="utf-8"
 
-            objeto
+            ) as arquivo:
 
-        )
+                self.conhecimentos = json.load(arquivo)
 
-    # -------------------------
-    # Verificar
-    # -------------------------
+        else:
 
-    def existe(
-
-        self,
-
-        objeto
-
-    ):
-
-        return (
-
-            self.consultar(objeto)
-
-            is not None
-
-        )
+            self.salvar()
 
     # -------------------------
-    # Atualizar
-    # -------------------------
 
-    def atualizar(
+    def salvar(self):
 
-        self,
+        os.makedirs("dados", exist_ok=True)
 
-        objeto,
+        with open(
 
-        descricao
+            self.arquivo,
 
-    ):
+            "w",
 
-        self.aprender(
+            encoding="utf-8"
 
-            objeto,
+        ) as arquivo:
 
-            descricao
+            json.dump(
 
-        )
+                self.conhecimentos,
 
-    # -------------------------
-    # Remover
-    # -------------------------
+                arquivo,
 
-    def remover(
+                indent=4,
 
-        self,
+                ensure_ascii=False
 
-        objeto
-
-    ):
-
-        objeto = objeto.strip().lower()
-
-        conhecimento = self.memoria.dados.get(
-
-            "conhecimento",
-
-            {}
-
-        )
-
-        if objeto in conhecimento:
-
-            del conhecimento[objeto]
-
-            self.memoria.salvar()
-
-            return True
-
-        return False
+            )
 
     # -------------------------
-    # Listar
-    # -------------------------
 
-    def listar(self):
+    def aprender(self, objeto, descricao):
 
-        return self.memoria.dados.get(
+        objeto = objeto.lower().strip()
 
-            "conhecimento",
+        self.conhecimentos[objeto] = descricao
 
-            {}
-
-        )
+        self.salvar()
 
     # -------------------------
-    # Quantidade
-    # -------------------------
 
-    def quantidade(self):
+    def consultar(self, objeto):
 
-        return len(
+        objeto = objeto.lower().strip()
 
-            self.listar()
-
-        )
+        return self.conhecimentos.get(objeto)
