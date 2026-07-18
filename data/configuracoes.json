@@ -1,1 +1,12 @@
-
+{
+    "nome_assistente": "Lia",
+    "versao": "0.1.0",
+    "idioma": "pt-BR",
+    "voz_ativada": false,
+    "tema": "escuro",
+    "velocidade_resposta": 1.0,
+    "pesquisa_automatica": true,
+    "aprendizado_automatico": true,
+    "max_resultados_pesquisa": 3,
+    "historico_maximo": 100
+}
