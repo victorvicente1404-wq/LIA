@@ -1,5 +1,7 @@
 {
-    "usuario": {},
+    "usuario": {
+        "nome": ""
+    },
     "conhecimento": {},
     "preferencias": {},
     "historico": []
