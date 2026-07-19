@@ -1,0 +1,17 @@
+# Python
+
+__pycache__/
+*.pyc
+
+# Ambiente
+
+.env
+.venv/
+
+# VSCode
+
+.vscode/
+
+# Dados temporários
+
+*.log
