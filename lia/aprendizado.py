@@ -11,61 +11,43 @@ class Aprendizado:
 
         self.conhecimento = Conhecimento()
 
-
     # ---------------------------------
 
-    def aprender(self, assunto, informacao):
-
-        if not assunto:
-
-            return False
-
-
-        if not informacao:
-
-            return False
-
+    def aprender(self, assunto, resposta):
 
         assunto = assunto.lower().strip()
 
+        if assunto == "":
+            return False
 
-        self.conhecimento.aprender(
+        if resposta is None:
+            return False
 
-            assunto,
+        resposta = resposta.strip()
 
-            informacao
+        if resposta == "":
+            return False
 
+        # Evita salvar repetido
+        existente = self.conhecimento.consultar(
+            assunto
         )
 
+        if existente:
+
+            return False
+
+        self.conhecimento.aprender(
+            assunto,
+            resposta
+        )
 
         return True
 
-
     # ---------------------------------
 
-    def ja_sabe(self, assunto):
-
-        resposta = self.conhecimento.consultar(
-
-            assunto
-
-        )
-
-
-        if resposta:
-
-            return True
-
-
-        return False
-
-
-    # ---------------------------------
-
-    def obter_aprendizado(self, assunto):
+    def consultar(self, assunto):
 
         return self.conhecimento.consultar(
-
             assunto
-
         )
