@@ -10,14 +10,20 @@ from interface import Janela
 
 
 def main():
+    """
+    Inicializa a aplicação da Lia.
+    """
 
     app = QApplication(sys.argv)
+
+    # Impede que o programa feche se todas as janelas forem ocultadas.
+    app.setQuitOnLastWindowClosed(True)
 
     janela = Janela()
     janela.show()
 
-    sys.exit(app.exec())
+    return app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
