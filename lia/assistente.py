@@ -8,6 +8,7 @@ from .usuario import Usuario
 from .conhecimento import Conhecimento
 from .respostas import Respostas
 from .pesquisa import Pesquisa
+from .aprendizado import Aprendizado
 
 
 class Assistente:
