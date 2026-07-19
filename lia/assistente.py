@@ -6,9 +6,8 @@ from .interpretador import Interpretador
 from .memoria import Memoria
 from .usuario import Usuario
 from .conhecimento import Conhecimento
-from .respostas import Respostas
-from .aprendizado import Aprendizado
 from .pesquisa import Pesquisa
+from .respostas import Respostas
 
 
 class Assistente:
@@ -16,30 +15,44 @@ class Assistente:
     def __init__(self):
 
         self.memoria = Memoria()
-        self.usuario = Usuario(self.memoria)
-        self.conhecimento = Conhecimento(self.memoria)
+
+        self.usuario = Usuario(
+            self.memoria
+        )
+
+        self.conhecimento = Conhecimento(
+            self.memoria
+        )
+
         self.interpretador = Interpretador()
+
+    # ----------------------------------
 
     def responder(self, mensagem):
 
         mensagem = mensagem.strip()
 
-        if mensagem == "":
+        if not mensagem:
+
             return Respostas.vazia()
 
-        comando = self.interpretador.interpretar(mensagem)
-        acao = comando["acao"]
+        comando = self.interpretador.interpretar(
+            mensagem
+        )
 
-        # ----------------------------
+        acao = comando.get("acao")
+
+        # ----------------------------------
         # Cumprimento
-        # ----------------------------
+        # ----------------------------------
 
         if acao == "CUMPRIMENTO":
+
             return Respostas.ola()
 
-        # ----------------------------
+        # ----------------------------------
         # Nome
-        # ----------------------------
+        # ----------------------------------
 
         if acao == "SALVAR_NOME":
 
@@ -53,50 +66,70 @@ class Assistente:
 
             nome = self.usuario.obter_nome()
 
-            if nome == "":
-                return Respostas.nao_sei()
+            if nome:
 
-            return Respostas.nome(nome)
+                return Respostas.nome(nome)
 
-        # ----------------------------
+            return Respostas.nao_sei()
+
+        # ----------------------------------
         # Aprender
-        # ----------------------------
+        # ----------------------------------
 
         if acao == "APRENDER":
 
             self.conhecimento.aprender(
+
                 comando["objeto"],
+
                 comando["descricao"]
+
             )
 
             return Respostas.aprendido()
 
-        # ----------------------------
-        # Consultar (Integração de Pesquisa)
-        # ----------------------------
+        # ----------------------------------
+        # Consultar
+        # ----------------------------------
 
         if acao == "CONSULTAR":
 
             objeto = comando["objeto"]
 
-            # Procura primeiro no conhecimento local
-            resposta = self.conhecimento.consultar(objeto)
+            # Procura no conhecimento
+
+            resposta = self.conhecimento.consultar(
+                objeto
+            )
 
             if resposta:
-                return Respostas.conhecimento(resposta)
 
-            # Não encontrou localmente → pesquisa na internet
-            resposta = Pesquisa.pesquisar(objeto)
+                return Respostas.conhecimento(
+                    resposta
+                )
+
+            # Pesquisa
+
+            resposta = Pesquisa.pesquisar(
+                objeto
+            )
 
             if resposta:
-                # Aprende automaticamente para próximas vezes
-                self.conhecimento.aprender(objeto, resposta)
-                return Respostas.conhecimento(resposta)
+
+                self.conhecimento.aprender(
+
+                    objeto,
+
+                    resposta
+
+                )
+
+                return Respostas.conhecimento(
+                    resposta
+                )
 
             return Respostas.desconhecido()
 
-        # ----------------------------
-        # Desconhecido
-        # ----------------------------
+        # ----------------------------------
 
         return Respostas.nao_entendi()
