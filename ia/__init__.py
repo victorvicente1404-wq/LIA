@@ -11,7 +11,7 @@ from .deepseek import DeepSeek
 
 __all__ = [
     "ChatGPT",
-    # "Gemini",
-    # "Claude",
-    # "DeepSeek"
+    "Gemini",
+    "Claude",
+    "DeepSeek"
 ]
