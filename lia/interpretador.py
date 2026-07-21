@@ -1,6 +1,5 @@
 """
-Interpretador da Lia.
-Responsável por entender a intenção do usuário.
+Interpretador da Lia - Versão ultra sensível
 """
 
 import re
@@ -11,178 +10,46 @@ class Interpretador:
     def interpretar(self, frase):
 
         frase = frase.strip()
-
         frase_lower = frase.lower()
 
-        # -------------------------
         # Cumprimento
-        # -------------------------
+        if any(g in frase_lower for g in ["oi", "olá", "ola", "bom dia", "boa tarde", "boa noite"]):
+            return {"acao": "CUMPRIMENTO"}
 
-        cumprimentos = [
-
-            "oi",
-
-            "olá",
-
-            "ola",
-
-            "e ai",
-
-            "e aí",
-
-            "bom dia",
-
-            "boa tarde",
-
-            "boa noite"
-
-        ]
-
-        if any(
-            frase_lower.startswith(c)
-            for c in cumprimentos
-        ):
-
+        # Nome
+        if frase_lower.startswith(("meu nome é ", "meu nome e ")):
             return {
-
-                "acao": "CUMPRIMENTO"
-
-            }
-
-        # -------------------------
-        # Salvar Nome
-        # -------------------------
-
-        match = re.match(
-
-            r"meu nome (é|e)\s+(.+)",
-
-            frase_lower
-
-        )
-
-        if match:
-
-            return {
-
                 "acao": "SALVAR_NOME",
-
-                "valor": match.group(2).strip().title()
-
+                "valor": frase[11:].strip()
             }
 
-        # -------------------------
-        # Perguntar Nome
-        # -------------------------
+        if any(x in frase_lower for x in ["qual meu nome", "como eu me chamo"]):
+            return {"acao": "PERGUNTAR_NOME"}
 
-        if any(
-
-            texto in frase_lower
-
-            for texto in [
-
-                "qual meu nome",
-
-                "qual é meu nome",
-
-                "como eu me chamo"
-
-            ]
-
-        ):
-
-            return {
-
-                "acao": "PERGUNTAR_NOME"
-
-            }
-
-        # -------------------------
         # Aprender
-        # -------------------------
-
         if frase_lower.startswith("aprenda que "):
-
             texto = frase[12:]
-
-            partes = re.split(
-
-                r"\s+é\s+|\s+e\s+",
-
-                texto,
-
-                maxsplit=1,
-
-                flags=re.IGNORECASE
-
-            )
-
+            partes = re.split(r"\s+é\s+|\s+e\s+", texto, maxsplit=1, flags=re.IGNORECASE)
             if len(partes) == 2:
-
                 return {
-
                     "acao": "APRENDER",
-
                     "objeto": partes[0].strip().lower(),
-
                     "descricao": partes[1].strip()
-
                 }
 
-        # -------------------------
-        # Perguntas
-        # -------------------------
+        # CONSULTAR - Ultra sensível
+        if any(p in frase_lower for p in [
+            "o que é", "oque é", "oq é", "quem é", "o que são", "oque são",
+            "qual é", "o que significa", "me fale sobre", "me diga o que", 
+            "o que é um", "o que é uma", "o que foi", "quem foi"
+        ]):
+            # Remove o início da pergunta
+            objeto = frase_lower
+            for prefix in ["o que é ", "oque é ", "oq é ", "quem é ", "o que são ", "oque são ", "qual é ", "o que significa ", "me fale sobre ", "me diga o que é ", "o que é um ", "o que é uma "]:
+                if objeto.startswith(prefix):
+                    objeto = objeto[len(prefix):]
+                    break
+            objeto = objeto.replace("?", "").strip()
+            return {"acao": "CONSULTAR", "objeto": objeto}
 
-        consultas = [
-
-            "o que é ",
-
-            "o que e ",
-
-            "quem é ",
-
-            "quem e ",
-
-            "qual é ",
-
-            "qual e ",
-
-            "o que significa ",
-
-            "me fale sobre ",
-
-            "me diga o que é ",
-
-            "explique ",
-
-            "explique o que é "
-
-        ]
-
-        for inicio in consultas:
-
-            if frase_lower.startswith(inicio):
-
-                objeto = frase_lower[len(inicio):]
-
-                objeto = objeto.replace("?", "").strip()
-
-                return {
-
-                    "acao": "CONSULTAR",
-
-                    "objeto": objeto
-
-                }
-
-        # -------------------------
-        # Conversa Livre
-        # -------------------------
-
-        return {
-
-            "acao": "CONVERSAR",
-
-            "mensagem": frase
-
-        }
+        # Força consulta em qualquer frase com "?" ou palavras chave
