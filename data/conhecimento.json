@@ -3,5 +3,11 @@
     "lia": "Lia é uma assistente virtual inteligente desenvolvida em Python.",
     "inteligência artificial": "Inteligência Artificial é a simulação de processos de inteligência humana por máquinas.",
     "elon musk": "Elon Musk é um empresário, engenheiro e filantropo sul-africano, fundador da SpaceX e CEO da Tesla.",
-    "grok": "Grok é uma IA criada pela xAI, inspirada no Guia do Mochileiro das Galáxias."
+    "grok": "Grok é uma IA criada pela xAI, inspirada no Guia do Mochileiro das Galáxias.",
+    "olá": {
+        "descricao": "Olá pode referir-se a:Oi (interjeição) — cumprimento\nOlá (distrito) — distrito no Panamá\nOlá — a capital do distrito homónimo\nHeartbrand — marca de gelados comercializados em Portugal com a designação Olá",
+        "fonte": "Memória",
+        "data": "21/07/2026 18:51",
+        "acessos": 1
+    }
 }
