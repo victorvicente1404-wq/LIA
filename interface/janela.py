@@ -37,43 +37,22 @@ class Janela(QWidget):
 
         self.criar_interface()
 
-    # ---------------------------------
-
     def criar_interface(self):
 
         layout = QVBoxLayout()
+        layout.setContentsMargins(Tema.MARGEM, Tema.MARGEM, Tema.MARGEM, Tema.MARGEM)
+        layout.setSpacing(Tema.ESPACAMENTO)
 
-        layout.setContentsMargins(
-            Tema.MARGEM,
-            Tema.MARGEM,
-            Tema.MARGEM,
-            Tema.MARGEM
-        )
-
-        layout.setSpacing(
-            Tema.ESPACAMENTO
-        )
-
-        # -------------------------
         # Rosto
-        # -------------------------
-
         self.rosto = Rosto()
         layout.addWidget(self.rosto)
 
-        # -------------------------
         # Chat
-        # -------------------------
-
         self.chat = Chat()
         layout.addWidget(self.chat)
 
-        # -------------------------
         # Entrada
-        # -------------------------
-
         linha = QHBoxLayout()
-
         self.entrada = EntradaLia()
         self.entrada.returnPressed.connect(self.enviar)
 
@@ -84,32 +63,23 @@ class Janela(QWidget):
         linha.addWidget(self.botao)
 
         layout.addLayout(linha)
-
         self.setLayout(layout)
 
-        # Mensagem inicial
-        self.chat.adicionar_lia(
-            "Olá! Eu sou a Lia. Como posso te ajudar hoje?"
-        )
-
-    # ---------------------------------
+        self.chat.adicionar_lia("Olá! Eu sou a Lia. Pode me perguntar qualquer coisa! 😊")
 
     def enviar(self):
-
         mensagem = self.entrada.text().strip()
 
-        if mensagem == "":
+        if not mensagem:
             return
 
         self.chat.adicionar_usuario(mensagem)
-
         self.rosto.definir_estado("pensando")
 
-        # Chama o Kernel para processar (inclui pesquisa)
+        # Chama o kernel
         resposta = self.kernel.responder(mensagem)
 
         self.chat.adicionar_lia(resposta)
 
         self.rosto.definir_estado("normal")
-
         self.entrada.clear()
