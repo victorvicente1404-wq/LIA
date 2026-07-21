@@ -1,44 +1,35 @@
 """
-Kernel da Lia - Central de controle
-Roteador de ferramentas externas
+Roteador da Lia - Gerencia IAs com fallback
 """
 
-from .assistente import Assistente  # Note: pode precisar ajustar import
-
+from ia.chatgpt import ChatGPT
+from ia.gemini import Gemini
 
 class Roteador:
-    """
-    Responsável por decidir se deve usar ferramentas externas
-    antes de cair no assistente principal.
-    """
-
     def __init__(self):
-        self.assistente = Assistente()  # fallback
+        self.chatgpt = ChatGPT()
+        self.gemini = Gemini()
 
-    def decidir(self, mensagem: str) -> str:
-        """
-        Analisa a mensagem e decide se deve usar alguma ferramenta especial.
-        Retorna a resposta se encontrou, senão retorna None.
-        """
-        mensagem_lower = mensagem.lower().strip()
+    def decidir(self, mensagem: str):
+        """Tenta ChatGPT → Gemini → retorna None (para pesquisa)"""
 
-        # Exemplos de rotas futuras:
-        # if "clima" in mensagem_lower or "tempo" in mensagem_lower:
-        #     return self.ferramenta_tempo(mensagem)
+        # Tenta ChatGPT primeiro
+        if self.chatgpt:
+            try:
+                resposta = self.chatgpt.perguntar(mensagem)
+                if resposta:
+                    return resposta
+            except:
+                pass
 
-        # if "calcular" in mensagem_lower or any(c.isdigit() for c in mensagem):
-        #     from ferramentas.calculadora import Calculadora
-        #     return Calculadora.calcular(mensagem)
+        # Fallback para Gemini
+        if self.gemini:
+            try:
+                resposta = self.gemini.perguntar(mensagem)
+                if resposta:
+                    return resposta
+            except:
+                pass
 
-        # Por enquanto, retorna None para usar o fluxo normal (pesquisa)
-        return None
-
-    # ------------------- Ferramentas futuras -------------------
-
-    def ferramenta_tempo(self, mensagem):
-        """Exemplo de integração futura."""
-        return None
-
-    def ferramenta_calculadora(self, mensagem):
-        """Exemplo de integração futura."""
+        # Se nenhuma IA responder, retorna None para o assistente usar pesquisa
         return None
